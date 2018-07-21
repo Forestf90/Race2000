@@ -11,17 +11,15 @@ var lista_przeszkod =[];
 
 var gracz ={
 	poz_x: 175,
+	poz_y: 490,
 	auto :new Image(),
-	//auto.src='police.png',
-	//this.gracz.auto.src = 'police.png',
 };
 
 function przeszkoda() {
 	this.poz_x=Math.floor(Math.random() * 160) + 95;
-	this.poz_y=0 ;
-	this.id_przeszkody=Math.floor(Math.random() * 2);
+	this.poz_y=-100 ;
+	this.id_przeszkody=Math.floor(Math.random() * 4);
 	this.auto =new Image();
-	//this.auto.src="images/Car"+id_przeszkody+".png";
 	this.auto.src="images/Car"+this.id_przeszkody+".png";
 	
 }
@@ -68,34 +66,68 @@ function rys_droge()
 	ctx.fillText(punkty,5,80);
 	
 	for(var i=0 ; i<lista_przeszkod.length ;i++){
-		//lista_przeszkod[i].auto.src='images/Car1.png';
-			ctx.drawImage(lista_przeszkod[i].auto, lista_przeszkod[i].poz_x, lista_przeszkod[i].poz_y);  
+		ctx.drawImage(lista_przeszkod[i].auto, lista_przeszkod[i].poz_x, lista_przeszkod[i].poz_y);  
 	}
 	
 	
-		ctx.drawImage(gracz.auto, gracz.poz_x, 490);  
+		ctx.drawImage(gracz.auto, gracz.poz_x, gracz.poz_y);  
 	
 	ctx.stroke();
 }
 
+function muzyka(){
+myAudio = new Audio('music/997.mp3'); 
+myAudio.loop = true;
+myAudio.play();
+}
+
+
+function zderzenie_czolowe(){
+	
+	var temp =gracz.poz_y -lista_przeszkod[0].poz_y;
+	if(temp<90 && temp>-90){
+		for(var i=0 ;i<45 ;i++){
+			for(var j=0 ;j<45 ;j++){
+				if((gracz.poz_x+i==lista_przeszkod[0].poz_x+j)){
+					
+					if(confirm('Uzyskales: '+(punkty-2)+' punktow \n Czy chcesz zaczac jeszcze raz?')){
+						window.location.reload();  
+						return;
+					}
+					else{
+						close();
+						window.location.reload();
+						return;
+					}
+				}
+			
+			}
+			
+		}
+	}
+	
+	
+}
+
 function ruch(){
 
-
+	
+	
 	for(var i=0 ; i<lista_przeszkod.length ;i++){
-		lista_przeszkod[i].poz_y+=3;
+		lista_przeszkod[i].poz_y+=2;
 		//if(lista_przeszkod[i]poz_y>600) lista_przeszkod[i].splice(i ,1);
 		//alert('lista_przeszkod[i].poz_y')
 	}
 	rys_droge();
 	licznik=setTimeout(ruch,speed);
-	roznica+=3;
+	roznica+=5;
 	if(roznica==0){
 		roznica=-60;
 	}
 	
 	resp++;
 	punkty++;
-	if(resp ==110){
+	if(resp ==130){
 		
 		lista_przeszkod.push(new przeszkoda());
 		var temp = lista_przeszkod.lenght;
@@ -103,17 +135,20 @@ function ruch(){
 		if(speed!=10)speed--;
 		
 	}
+	zderzenie_czolowe();
+	
+	if(lista_przeszkod[0].poz_y>600){
+		lista_przeszkod.shift();
+		}
+		
 }
 
 
 
 window.onload = function main(){
 	gracz.auto.src = 'images/police.png';
-	
+	muzyka();
 	rys_droge();
-	//while(true){
-		
-	//licznik=setTimeout(ruch,30)
 	ruch();
-	//}
+
 }
